@@ -23,52 +23,6 @@ class UserController extends Controller
         }
     }
 
-    public function register() {
-        $rules = [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'address' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|confirmed',
-        ];
-        $validator = Validator::make(request()->all(), $rules);
-
-        if ($validator->fails()) {
-            return $validator->messages();
-        }
-
-        $user = User::create([
-            'first_name'=>request()->first_name,
-            'last_name'=>request()->last_name,
-            'address'=>request()->address,
-            'email'=>request()->email,
-            'password'=>bcrypt(request()->password)
-        ]);
-
-        return $user;
-    }
-
-    public function login() {
-        $rules = [
-            'email' => 'required|string',
-            'password' => 'required|string',
-        ];
-        $validator = Validator::make(request()->all(), $rules);
-
-        if ($validator->fails()) {
-            return $validator->messages();
-        }
-
-        $user = User::where(['email'=>request()->email])->first();
-
-        if(!$user || !Hash::check(request()->password, $user->password)) {
-            return [
-              "message" => "Email or password doesn't match"
-            ];
-        }
-        return $user;
-    }
-
     public function show($userId) {
         $userFound = User::where('id', $userId)->first();
         if(!$userFound) {
